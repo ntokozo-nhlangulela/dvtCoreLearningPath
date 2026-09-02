@@ -21,7 +21,7 @@ Realtime
 - Socket.IO
 
 AI
-- OpenAI API
+- Groq/Google Gemini AI API
 
 Runtime
 - Docker Compose
