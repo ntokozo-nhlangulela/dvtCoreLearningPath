@@ -1,0 +1,11 @@
+{
+  "name": "dvt-sprinthub",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=web",
+    "dev:api": "npm run dev --workspace=api"
+  }
+}
