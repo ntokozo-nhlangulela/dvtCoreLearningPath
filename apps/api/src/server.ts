@@ -29,7 +29,7 @@ app.get('/api/tasks', async (req, res) => {
     // res.json(tasks);
 
     // Temporary placeholder response:
-    res.json([]);
+    res.json(["Tasks will be fetched from the database once Prisma is set up!"]);
   } catch (error) {
     console.error('Error fetching tasks:', error);
     res.status(500).json({ error: 'Internal server error' });
