@@ -7,7 +7,7 @@ await prisma.task.deleteMany();
   const task = await prisma.task.create({
    data: {
     title: "Create 1st screen",
-    completed: true
+    completed: "IN_PROGRESS"
   }
 });
   // Fetch all tasks
