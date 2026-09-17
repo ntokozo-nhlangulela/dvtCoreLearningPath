@@ -12,11 +12,19 @@ datasource db {
   provider = "postgresql"
 }
 
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  BLOCKED
+  DONE
+}
+
 // Added the Task model
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          String     @id @default(cuid())
   title       String
-  completed   Boolean  @default(false)
+  completed   TaskStatus @default(TODO)
   createdAt   DateTime @default(now())
 }
 
