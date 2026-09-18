@@ -1,11 +1,9 @@
 import { Router } from "express";
-import { PrismaClient } from "../../generated/prisma/client.js";
-import { adapter } from "../lib/prisma.js";
-
-
+import { prisma } from "../lib/prisma.js";
 const router = Router();
-const prisma = new PrismaClient({adapter});
+import { dailyUpdateSchema } from "../../../web/src/lib/validation/daily-update-schema.js";
 
+    
 // apps/api/src/routes/daily-updates.ts (or similar)
 router.get("/", async (req, res) => {
   try {
@@ -20,13 +18,18 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const result = dailyUpdateSchema.safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).json({
+      message: "Validation failed",
+      errors: result.error.format(),
+    });
+  }
+
   try {
     const update = await prisma.dailyUpdate.create({
-      data: {
-        completedWork: req.body.completedWork,
-        nextFocus: req.body.nextFocus,
-        blockers: req.body.blockers,
-      },
+      data: result.data, // Use the safely parsed & validated data
     });
 
     return res.status(201).json(update);
