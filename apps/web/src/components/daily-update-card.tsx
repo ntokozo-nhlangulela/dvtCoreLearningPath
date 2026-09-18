@@ -1,7 +1,10 @@
 import { DailyUpdate } from "@/types/daily-update";
+import { FeedbackForm } from "./feedback-form";
+import { Feedback } from "@/types/feedback";
 
 interface Props {
   update: DailyUpdate;
+  feed: Feedback;
 }
 
 export function DailyUpdateCard({ update }: Props) {
@@ -27,6 +30,24 @@ export function DailyUpdateCard({ update }: Props) {
           <p>{update.blockers}</p>
         </div>
       )}
+
+      {/* Feedback Section */}
+      <div className="border-t pt-3 mt-3">
+        <h4 className="font-medium text-sm">Feedback</h4>
+        {update.feedback && update.feedback.length > 0 ? (
+          <ul className="space-y-2 mt-2">
+            {update.feedback.map((fb) => (
+              <li key={fb.id} className="bg-gray-50 p-2 rounded text-sm border">
+                {fb.comment}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-gray-500 mt-1">No feedback yet.</p>
+        )}
+
+        <FeedbackForm dailyUpdateId={update.id} />
+      </div>
     </div>
   );
 }
