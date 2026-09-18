@@ -3,11 +3,14 @@ import { dailyUpdateSchema } from "../../../web/src/lib/validation/daily-update-
 import { prisma } from "../lib/prisma.js";
 const router = Router();
 
-    
+// GET daily updates (optionally filter by sprintId)
 router.get("/", async (req, res) => {
+  const { sprintId } = req.query;
+
   try {
     const updates = await prisma.dailyUpdate.findMany({
-        include: { feedback: true },
+      where: sprintId ? { sprintId: String(sprintId) } : undefined,
+      include: { feedback: true },
       orderBy: { createdAt: "desc" },
     });
     res.json(updates);
@@ -17,6 +20,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// POST a new daily update linked to a sprint
 router.post("/", async (req, res) => {
   const result = dailyUpdateSchema.safeParse(req.body);
 
@@ -29,13 +33,12 @@ router.post("/", async (req, res) => {
 
   try {
     const update = await prisma.dailyUpdate.create({
-      data: result.data, 
+      data: result.data, // Includes sprintId from parsed schema
     });
 
     return res.status(201).json(update);
   } catch (error) {
     console.error(error);
-
     return res.status(500).json({
       message: "Failed to create update",
     });

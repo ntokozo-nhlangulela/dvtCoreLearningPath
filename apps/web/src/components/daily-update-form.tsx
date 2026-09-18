@@ -11,7 +11,11 @@ import {
 } from "@/lib/validation/daily-update-schema";
 import { useState, useEffect } from "react";
 
-export function DailyUpdateForm() {
+interface Props {
+  sprintId: string;
+}
+
+export function DailyUpdateForm({ sprintId }: Props) {
   const {
   register,
   handleSubmit,
@@ -19,6 +23,7 @@ export function DailyUpdateForm() {
   formState: { errors, isSubmitting },
 } = useForm<DailyUpdateFormValues>({
   resolver: zodResolver(dailyUpdateSchema),
+  defaultValues: { sprintId },
 });
 
 const [successMessage, setSuccessMessage] =
