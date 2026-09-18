@@ -6,6 +6,19 @@ import { adapter } from "../lib/prisma.js";
 const router = Router();
 const prisma = new PrismaClient({adapter});
 
+// apps/api/src/routes/daily-updates.ts (or similar)
+router.get("/", async (req, res) => {
+  try {
+    const updates = await prisma.dailyUpdate.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    res.json(updates);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const update = await prisma.dailyUpdate.create({
