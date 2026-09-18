@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { prisma } from "./lib/prisma.js";
 import tasksRouter from "./routes/tasks.js";
+import dailyUpdatesRouter from "./routes/daily-updates.js"
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 app.use("/api/tasks", tasksRouter);
+app.use("/api/daily-updates", dailyUpdatesRouter);
 // Health check route
 app.get('/', (req, res) => {
   res.json({ message: 'API is running successfully with PostgreSQL 🚀' });
