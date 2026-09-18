@@ -20,12 +20,24 @@ enum TaskStatus {
   DONE
 }
 
+model Sprint {
+  id           String        @id @default(cuid())
+  name         String        // e.g., "Sprint 14"
+  startDate    DateTime
+  endDate      DateTime
+  isActive     Boolean       @default(false)
+  tasks        Task[]
+  dailyUpdates DailyUpdate[]
+}
+
 // Added the Task model
 model Task {
   id          String     @id @default(cuid())
   title       String
   completed   TaskStatus @default(TODO)
   createdAt   DateTime @default(now())
+  sprintId  String?
+  sprint    Sprint?    @relation(fields: [sprintId], references: [id])
 }
 
 // Added model
@@ -36,6 +48,8 @@ model DailyUpdate {
   blockers      String?
   createdAt     DateTime @default(now())
   feedback      Feedback[]
+  sprintId      String?
+  sprint        Sprint?      @relation(fields: [sprintId], references: [id])
 }
 
 // Added model
