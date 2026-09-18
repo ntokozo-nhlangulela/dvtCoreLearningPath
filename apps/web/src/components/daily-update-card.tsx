@@ -1,10 +1,8 @@
 import { DailyUpdate } from "@/types/daily-update";
 import { FeedbackForm } from "./feedback-form";
-import { Feedback } from "@/types/feedback";
 
 interface Props {
   update: DailyUpdate;
-  feed: Feedback;
 }
 
 export function DailyUpdateCard({ update }: Props) {

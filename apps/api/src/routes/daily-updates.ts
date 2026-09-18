@@ -4,7 +4,6 @@ import { prisma } from "../lib/prisma.js";
 const router = Router();
 
     
-// apps/api/src/routes/daily-updates.ts (or similar)
 router.get("/", async (req, res) => {
   try {
     const updates = await prisma.dailyUpdate.findMany({
@@ -30,7 +29,7 @@ router.post("/", async (req, res) => {
 
   try {
     const update = await prisma.dailyUpdate.create({
-      data: result.data, // Use the safely parsed & validated data
+      data: result.data, 
     });
 
     return res.status(201).json(update);
@@ -43,7 +42,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// POST feedback for a specific daily update (ADD THIS)
 router.post("/:id/feedback", async (req, res) => {
   const { id } = req.params;
   const { comment } = req.body;
