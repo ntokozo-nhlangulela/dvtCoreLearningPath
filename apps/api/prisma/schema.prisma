@@ -25,6 +25,7 @@ model Sprint {
   name         String        // e.g., "Sprint 14"
   startDate    DateTime
   endDate      DateTime
+  description  String
   isActive     Boolean       @default(false)
   tasks        Task[]
   dailyUpdates DailyUpdate[]
@@ -32,12 +33,13 @@ model Sprint {
 
 // Added the Task model
 model Task {
-  id          String     @id @default(cuid())
-  title       String
-  completed   TaskStatus @default(TODO)
-  createdAt   DateTime @default(now())
-  sprintId  String?
-  sprint    Sprint?    @relation(fields: [sprintId], references: [id])
+  id            String     @id @default(cuid())
+  title         String
+  completed     TaskStatus @default(TODO)
+  createdAt     DateTime @default(now())
+  description   String
+  sprintId      String?
+  sprint        Sprint?    @relation(fields: [sprintId], references: [id])
 }
 
 // Added model
