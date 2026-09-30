@@ -14,7 +14,8 @@ export const dailyUpdateSchema = z.object({
     .max(500, "Blockers cannot exceed 500 characters")
     .optional(),
 
-    sprintId: z.string().min(1, "Sprint ID is required"),
+    sprintId: z.string()
+    .min(1, "Sprint ID is required"),
 });
 
 export type DailyUpdateFormValues =

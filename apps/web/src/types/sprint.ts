@@ -6,6 +6,7 @@ export interface Sprint {
   id: string;
   name: string;
   startDate: string;
+  description?: string;
   endDate: string;
   isActive: boolean;
   tasks: Task[];
