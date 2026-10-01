@@ -6,7 +6,7 @@ export function Header() {
     <header className="border-b bg-white sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/" className="font-extrabold text-lg text-slate-900 tracking-tight">
+          <Link href="/sprints" className="font-extrabold text-lg text-slate-900 tracking-tight">
             🚀 DVT Learning Path
           </Link>
           <nav className="hidden md:flex items-center gap-4 text-sm font-medium text-slate-600">
