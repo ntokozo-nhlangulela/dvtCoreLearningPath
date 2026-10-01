@@ -43,12 +43,12 @@ export function FeedbackForm({ dailyUpdateId }: Props) {
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Add feedback..."
-        className="border rounded p-2 w-full text-sm"
+        className="border rounded p-2 w-full text-sm  text-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-border-slate-700 focus:outline-none"
       />
       <button
         type="submit"
         disabled={isSubmitting}
-        className="bg-gray-800 px-3 py-1 text-sm rounded cursor-pointer disabled:opacity-50"
+        className="bg-slate-700 text-white px-4 py-2 text-sm font-medium rounded-lg hover:bg-slate-800 disabled:opacity-50 cursor-pointer transition-colors"
       >
         {isSubmitting ? "Posting..." : "Post Feedback"}
       </button>
