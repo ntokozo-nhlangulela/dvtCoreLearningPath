@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { dailyUpdateSchema } from "../../../web/src/lib/validation/daily-update-schema.js";
 import { prisma } from "../lib/prisma.js";
-import { getIO } from "../socket";
+import { getIO } from "../socket.js";
 const router = Router();
 
 // GET daily updates (optionally filter by sprintId)
@@ -36,7 +36,10 @@ router.post("/", async (req, res) => {
     const update = await prisma.dailyUpdate.create({
       data: result.data, // Includes sprintId from parsed schema
     });
+    getIO().emit("daily-update-created", update);
+
     return res.status(201).json(update);
+    
   } catch (error) {
     console.error(error);
     return res.status(500).json({
