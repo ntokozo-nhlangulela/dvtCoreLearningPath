@@ -3,19 +3,8 @@ import { DailyUpdateCard } from "@/components/daily-update-card";
 import { DailyUpdateModal } from "@/components/daily-update-form";
 import { TaskCardModal } from "@/components/task-card-modal";
 import { TaskModal } from "@/components/task-form";
-import { Sprint } from "@/types/sprint";
+import { getSprintDetails } from "@/lib/getSprintDetails";
 
-async function getSprintDetails(id: string): Promise<Sprint> {
-  const res = await fetch(`http://localhost:4000/api/sprints/${id}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch sprint details");
-  }
-
-  return res.json();
-}
 
 interface PageProps {
   params: Promise<{ id: string }>;

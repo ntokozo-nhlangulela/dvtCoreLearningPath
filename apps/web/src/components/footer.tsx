@@ -1,4 +1,3 @@
-// apps/web/src/components/footer.tsx
 export function Footer() {
   return (
     <footer className="border-t bg-white text-slate-500 text-sm py-6 mt-auto">

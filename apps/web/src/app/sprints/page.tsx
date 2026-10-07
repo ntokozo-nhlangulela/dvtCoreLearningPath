@@ -1,19 +1,6 @@
-// apps/web/src/app/sprints/page.tsx
 import Link from "next/link";
 import { SprintForm } from "@/components/sprint-form";
-import { Sprint } from "@/types/sprint";
-
-async function getSprints(): Promise<Sprint[]> {
-  const res = await fetch("http://localhost:4000/api/sprints", {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch sprints");
-  }
-
-  return res.json();
-}
+import { getSprints } from "@/lib/getSprints";
 
 export default async function SprintsPage() {
   const sprints = await getSprints();
