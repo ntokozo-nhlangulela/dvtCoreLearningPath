@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { dailyUpdateSchema } from "../../../web/src/lib/validation/daily-update-schema.js";
 import { prisma } from "../lib/prisma.js";
+import { getIO } from "../socket";
 const router = Router();
 
 // GET daily updates (optionally filter by sprintId)
@@ -35,7 +36,6 @@ router.post("/", async (req, res) => {
     const update = await prisma.dailyUpdate.create({
       data: result.data, // Includes sprintId from parsed schema
     });
-
     return res.status(201).json(update);
   } catch (error) {
     console.error(error);
@@ -55,6 +55,12 @@ router.post("/:id/feedback", async (req, res) => {
         comment,
         dailyUpdateId: id,
       },
+    });
+    getIO().emit("feedback-added", {
+      id: feedback.id,
+      dailyUpdateId: feedback.dailyUpdateId,
+      comment: feedback.comment,
+      createdAt: feedback.createdAt,
     });
 
     return res.status(201).json(feedback);
