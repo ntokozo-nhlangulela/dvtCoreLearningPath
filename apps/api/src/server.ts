@@ -5,9 +5,14 @@ import { prisma } from "./lib/prisma.js";
 import tasksRouter from "./routes/tasks.js";
 import dailyUpdatesRouter from "./routes/daily-updates.js"
 import sprintsRouter from "./routes/sprints.js";
+import { initializeSocket } from "./socket.js";
+import http from "http";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const server = http.createServer(app);
+
+initializeSocket(server);
 
 // Middleware
 app.use(cors());
@@ -32,6 +37,6 @@ app.get('/api/tasks', async (req, res) => {
 });
 
 // Start the Express server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Backend server is running on http://localhost:${PORT}`);
 });
