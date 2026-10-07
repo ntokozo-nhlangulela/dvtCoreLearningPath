@@ -1,4 +1,4 @@
-import { DailyUpdateForm } from "@/components/daily-update-form";
+import { DailyUpdateModal } from "@/components/daily-update-form";
 import { DailyUpdateCard } from "@/components/daily-update-card";
 import { getDailyUpdates } from "@/lib/get-daily-updates";
 
@@ -11,7 +11,7 @@ export default async function DailyUpdatesPage() {
         Daily Updates
       </h1>
 
-      <DailyUpdateForm />
+      <DailyUpdateModal />
 
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">

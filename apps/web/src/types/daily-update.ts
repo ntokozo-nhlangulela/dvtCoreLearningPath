@@ -6,5 +6,6 @@ export interface DailyUpdate {
   nextFocus: string;
   blockers?: string;
   createdAt: string;
+  sprintId?: string;
   feedback?: Feedback[];
 }
