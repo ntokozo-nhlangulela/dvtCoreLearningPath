@@ -4,14 +4,15 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createDailyUpdate } from "@/lib/daily-updates";
-import { useRouter } from "next/navigation";
 import {
   dailyUpdateSchema,
   DailyUpdateFormValues,
 } from "@/lib/validation/daily-update-schema";
+import { DailyUpdate } from "@/types/daily-update";
 
 interface Props {
   sprintId?: string; // Made optional
+  onUpdateCreated?: (update: DailyUpdate) => void;
 }
 
 interface SprintOption {
@@ -19,11 +20,10 @@ interface SprintOption {
   name: string;
 }
 
-export function DailyUpdateModal({ sprintId: initialSprintId }: Props) {
+export function DailyUpdateModal({ sprintId: initialSprintId, onUpdateCreated }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [sprints, setSprints] = useState<SprintOption[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const router = useRouter();
 
   // Helper to safely open/close and clear success state
   const handleOpenChange = (open: boolean) => {
@@ -56,11 +56,19 @@ export function DailyUpdateModal({ sprintId: initialSprintId }: Props) {
 
   const onSubmit = async (values: DailyUpdateFormValues) => {
     try {
-      await createDailyUpdate({ ...values, sprintId: initialSprintId || values.sprintId });
+      const newUpdate = await createDailyUpdate({ 
+        ...values, 
+        sprintId: initialSprintId || values.sprintId 
+      });
+      
+      // <-- ADD THIS: Notify parent component instantly
+      if (onUpdateCreated) {
+        onUpdateCreated(newUpdate);
+      }
+
       reset({ sprintId: initialSprintId || "", completedWork: "", nextFocus: "", blockers: "" });
       setSuccessMessage("Daily update submitted successfully.");
       setIsOpen(false);
-      router.refresh();
     } catch (error) {
       console.error(error);
       alert("Failed to create update");
