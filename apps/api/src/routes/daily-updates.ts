@@ -16,7 +16,6 @@ router.get("/", async (req, res) => {
     });
     res.json(updates);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -33,20 +32,17 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const update = await prisma.dailyUpdate.create({
-      data: result.data, // Includes sprintId from parsed schema
-    });
-    getIO().emit("daily-update-created", update);
+  const update = await prisma.dailyUpdate.create({
+    data: result.data,
+    include: { feedback: true },
+  });
 
-    return res.status(201).json(update);
-    
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: "Failed to create update",
-    });
-  }
-});
+   getIO().emit("daily-update-created", update);
+
+  return res.status(201).json(update);
+} catch (error) {
+  return res.status(500).json({ message: "Failed to create update" });
+}});
 
 router.post("/:id/feedback", async (req, res) => {
   const { id } = req.params;
@@ -68,7 +64,6 @@ router.post("/:id/feedback", async (req, res) => {
 
     return res.status(201).json(feedback);
   } catch (error) {
-    console.error("Error creating feedback:", error);
     return res.status(500).json({ message: "Failed to add feedback" });
   }
 });
