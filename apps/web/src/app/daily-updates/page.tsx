@@ -1,9 +1,58 @@
-import { DailyUpdateModal } from "@/components/daily-update-form";
-import { DailyUpdateCard } from "@/components/daily-update-card";
-import { getDailyUpdates } from "@/lib/get-daily-updates";
+"use client";
 
-export default async function DailyUpdatesPage() {
-  const updates = await getDailyUpdates();
+import { DailyUpdateModal } from "@/components/daily-update-form";
+import { DailyUpdatesList } from "@/components/daily-updates-list";
+import useDailyUpdatesSocket from "@/hooks/useDailyUpdatesSocket";
+import { getDailyUpdates } from "@/lib/get-daily-updates";
+import { DailyUpdate } from "@/types/daily-update";
+import { useCallback, useEffect, useState } from "react";
+
+export default function DailyUpdatesPage() {
+  const [updates, setUpdates] = useState<DailyUpdate[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadUpdates() {
+      try {
+        const data = await getDailyUpdates();
+
+        console.log("Initial updates:", data);
+
+        setUpdates(data);
+      } catch (error) {
+        console.error("Failed to load updates:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUpdates();
+  }, []);
+
+  const handleNewUpdate = useCallback(
+    (newUpdate: DailyUpdate) => {
+      console.log("Adding update to state:", newUpdate);
+
+      setUpdates((current) => {
+        const exists = current.some(
+          (update) => update.id === newUpdate.id
+        );
+
+        if (exists) {
+          return current;
+        }
+
+        return [newUpdate, ...current];
+      });
+    },
+    []
+  );
+
+  useDailyUpdatesSocket(handleNewUpdate);
+
+  if (loading) {
+    return <div className="p-6">Loading updates...</div>;
+  }
 
   return (
     <main className="p-6 space-y-6">
@@ -11,19 +60,16 @@ export default async function DailyUpdatesPage() {
         Daily Updates
       </h1>
 
-      <DailyUpdateModal />
+      <DailyUpdateModal
+        onUpdateCreated={handleNewUpdate}
+      />
 
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">
           Update History
         </h2>
 
-        {updates.map((update) => (
-          <DailyUpdateCard
-            key={update.id}
-            update={update}
-          />
-        ))}
+        <DailyUpdatesList updates={updates} />
       </section>
     </main>
   );
