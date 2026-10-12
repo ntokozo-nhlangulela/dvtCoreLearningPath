@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { createDailyUpdate } from "@/lib/daily-updates";
 import {
-  dailyUpdateSchema,
   DailyUpdateFormValues,
+  dailyUpdateSchema,
 } from "@/lib/validation/daily-update-schema";
 import { DailyUpdate } from "@/types/daily-update";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface Props {
   sprintId?: string; // Made optional
@@ -24,6 +24,8 @@ export function DailyUpdateModal({ sprintId: initialSprintId, onUpdateCreated }:
   const [isOpen, setIsOpen] = useState(false);
   const [sprints, setSprints] = useState<SprintOption[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
+  const [loadingAi, setLoadingAi] = useState(false);
 
   // Helper to safely open/close and clear success state
   const handleOpenChange = (open: boolean) => {
@@ -38,6 +40,7 @@ export function DailyUpdateModal({ sprintId: initialSprintId, onUpdateCreated }:
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<DailyUpdateFormValues>({
     resolver: zodResolver(dailyUpdateSchema),
@@ -74,6 +77,37 @@ export function DailyUpdateModal({ sprintId: initialSprintId, onUpdateCreated }:
       alert("Failed to create update");
     }
   };
+
+    const completedWorkValue = watch("completedWork");
+    const nextFocusValue = watch("nextFocus");
+    const blockersValue = watch("blockers");
+
+  // Function to fetch AI suggestions on demand while writing
+    const handleGetAiInsights = async () => {
+      if (!completedWorkValue || !nextFocusValue) {
+        alert("Please fill in Completed Work and Next Focus first!");
+        return;
+      }
+      setLoadingAi(true);
+      try {
+        const res = await fetch("http://localhost:4000/api/ai-coach", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            completedWork: completedWorkValue,
+            nextFocus: nextFocusValue,
+            blockers: blockersValue,
+          }),
+        });
+        const data = await res.json();
+        setAiSuggestion(data.feedback);
+      } catch (e) {
+        console.error(e);
+        alert("Failed to fetch AI insights");
+      } finally {
+        setLoadingAi(false);
+      }
+    };
 
   return (
     <>
@@ -173,6 +207,25 @@ export function DailyUpdateModal({ sprintId: initialSprintId, onUpdateCreated }:
                 >
                   Cancel
                 </button>
+                {/* AI Assistant Preview Box inside Modal */}
+                <div className="p-3 bg-slate-50 border rounded-lg space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-semibold text-slate-600">🤖 AI Writing Assistant</span>
+                    <button
+                      type="button"
+                      onClick={handleGetAiInsights}
+                      disabled={loadingAi}
+                      className="text-xs bg-blue-600 text-white px-2.5 py-1 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {loadingAi ? "Analyzing..." : "Get AI Review Suggestions"}
+                    </button>
+                  </div>
+                  {aiSuggestion && (
+                    <div className="text-xs text-slate-700 bg-blue-50 border border-blue-200 p-2.5 rounded-md whitespace-pre-wrap">
+                      {aiSuggestion}
+                    </div>
+                  )}
+                </div>
                 <button
                   type="submit"
                   disabled={isSubmitting}
