@@ -25,7 +25,7 @@ model Sprint {
   name         String        // e.g., "Sprint 14"
   startDate    DateTime
   endDate      DateTime
-  description  String
+  description  String @default("")
   isActive     Boolean       @default(false)
   tasks        Task[]
   dailyUpdates DailyUpdate[]
@@ -37,7 +37,7 @@ model Task {
   title         String
   completed     TaskStatus @default(TODO)
   createdAt     DateTime @default(now())
-  description   String
+  description   String @default("")
   sprintId      String?
   sprint        Sprint?    @relation(fields: [sprintId], references: [id])
 }
@@ -51,6 +51,7 @@ model DailyUpdate {
   createdAt     DateTime @default(now())
   feedback      Feedback[]
   sprintId      String?
+  aiFeedback AiFeedback?
   sprint        Sprint?      @relation(fields: [sprintId], references: [id])
 }
 
@@ -61,4 +62,19 @@ model Feedback {
   createdAt     DateTime @default(now())
   dailyUpdateId String
   dailyUpdate   DailyUpdate @relation(fields: [dailyUpdateId], references: [id])
+}
+
+model AiFeedback {
+  id              String      @id @default(cuid())
+
+  score           Int
+
+  strengths       Json
+  improvements    Json
+  recommendations Json
+
+  createdAt       DateTime    @default(now())
+
+  dailyUpdateId   String      @unique
+  dailyUpdate     DailyUpdate @relation(fields: [dailyUpdateId], references: [id])
 }
