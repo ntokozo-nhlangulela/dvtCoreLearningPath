@@ -11,6 +11,29 @@ export function FeedbackForm({ dailyUpdateId }: Props) {
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const [generatingAi, setGeneratingAi] = useState(false);
+
+  // Ask AI to draft mentor feedback based on context
+  const handleDraftWithAi = async () => {
+    setGeneratingAi(true);
+    try {
+      const res = await fetch("http://localhost:4000/api/ai-coach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          completedWork: "Reviewing daily update item for feedback suggestion",
+          nextFocus: "Providing constructive mentorship",
+        }),
+      });
+      const data = await res.json();
+      // Extract or set structured AI suggestion into the comment box
+      setComment(`AI Suggestion / Review:\n${data.feedback}`);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setGeneratingAi(false);
+    }
+  };
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,6 +61,17 @@ export function FeedbackForm({ dailyUpdateId }: Props) {
 
   return (
     <form onSubmit={onSubmit} className="mt-3 space-y-2">
+      <div className="flex justify-between items-center">
+        <label className="text-xs font-medium text-slate-600">Add Mentor Feedback</label>
+        <button
+          type="button"
+          onClick={handleDraftWithAi}
+          disabled={generatingAi}
+          className="text-[11px] text-blue-600 hover:underline font-medium"
+        >
+          {generatingAi ? "Generating..." : "✨ Draft with AI"}
+        </button>
+      </div>
       <input
         type="text"
         value={comment}

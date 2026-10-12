@@ -7,6 +7,7 @@ import dailyUpdatesRouter from "./routes/daily-updates.js"
 import sprintsRouter from "./routes/sprints.js";
 import { initializeSocket } from "./socket.js";
 import http from "http";
+import aiCoachRoutes from "./routes/ai-coach.routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/api/tasks", tasksRouter);
 app.use("/api/daily-updates", dailyUpdatesRouter);
 app.use("/api/sprints", sprintsRouter);
+app.use("/api/ai-coach", aiCoachRoutes);
 // Health check route
 app.get('/', (req, res) => {
   res.json({ message: 'API is running successfully with PostgreSQL 🚀' });
